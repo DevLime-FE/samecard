@@ -9,36 +9,32 @@ interface GameBoardProps {
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({ level, cards, onCardClick }) => {
-    // map internal level ID (1, 2, 5) to grid size (5, 6, 10)
-    const getGridSize = (lvl: Level) => {
-        switch (lvl) {
-            case 1: return 5;
-            case 2: return 6;
-            case 5: return 10;
-            default: return 5;
-        }
-    };
+    // map level to grid size (it matches the level number now: 4->4, 6->6, 8->8)
+    const getGridSize = (lvl: Level) => lvl;
 
     const gridSize = getGridSize(level);
+
+    // Dynamic max-width based on grid size to prevent 4x4 from being too spread out
+    // 4x4 -> max 480px, 6x6 -> max 720px, 8x8 -> max 900px
+    const maxWidth = `${Math.min(gridSize * 110 + (gridSize - 1) * 15 + 40, 900)}px`;
 
     return (
         <div
             style={{
                 display: 'grid',
                 gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-                gap: '10px',
-                width: '95%',
-                maxWidth: '800px', // Constrain width for larger monitors
-                margin: '0 auto',
-                padding: '20px',
-                justifyItems: 'center', // Center cards in their cells
+                gap: '15px',
+                width: '100%',
+                maxWidth: maxWidth,
+                margin: '20px auto',
+                justifyItems: 'center',
+                perspective: '1000px'
             }}
         >
             {cards.map((card) => (
-                <div key={card.id} style={{ width: '100%', maxWidth: '80px', aspectRatio: '1/1' }}>
+                <div key={card.id} style={{ width: '100%', aspectRatio: '1/1' }}>
                     <Card card={card} onClick={onCardClick} />
                 </div>
-
             ))}
         </div>
     );

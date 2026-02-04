@@ -7,28 +7,22 @@ interface ScoreBoardProps {
 
 const ScoreBoard: React.FC<ScoreBoardProps> = ({ score, combo }) => {
     return (
-        <div style={{
+        <div className="glass-panel" style={{
             display: 'flex',
             justifyContent: 'space-around',
             alignItems: 'center',
-            width: '100%',
-            maxWidth: '600px',
-            margin: '20px auto',
-            padding: '15px',
-            border: '2px solid var(--neon-blue)',
-            borderRadius: '10px',
-            boxShadow: '0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue)',
-            backgroundColor: 'rgba(0, 243, 255, 0.1)'
+            padding: '15px 30px',
+            minWidth: '300px'
         }}>
             <div style={{ textAlign: 'center' }}>
-                <h3 style={{ margin: 0, color: 'var(--neon-blue)', fontSize: '1.2rem', textTransform: 'uppercase' }}>점수 (SCORE)</h3>
-                <p className="text-glow" style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 'bold' }}>{score}</p>
+                <h3 className="status-text" style={{ margin: 0, fontSize: '0.8rem', letterSpacing: '2px' }}>SCORE</h3>
+                <p style={{ margin: '5px 0 0', fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--neon-blue)', textShadow: '0 0 10px rgba(0, 243, 255, 0.5)' }}>{score}</p>
             </div>
 
             {combo > 1 && (
                 <div style={{ textAlign: 'center', animation: 'pulse 0.5s infinite alternate' }}>
-                    <h3 style={{ margin: 0, color: 'var(--neon-pink)', fontSize: '1.2rem', textTransform: 'uppercase' }}>COMBO!</h3>
-                    <p className="text-glow" style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 'bold', color: 'var(--neon-pink)' }}>x{combo}</p>
+                    <h3 className="status-text" style={{ margin: 0, fontSize: '0.8rem', letterSpacing: '2px', color: 'var(--neon-pink)' }}>COMBO</h3>
+                    <p style={{ margin: '5px 0 0', fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--neon-pink)', textShadow: '0 0 10px rgba(255, 0, 85, 0.5)' }}>x{combo}</p>
                 </div>
             )}
         </div>

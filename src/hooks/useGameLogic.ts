@@ -13,7 +13,7 @@ const shuffleArgs = <T>(array: T[]): T[] => {
     return newArray;
 };
 
-export const useGameLogic = (initialLevel: Level = 5) => {
+export const useGameLogic = (initialLevel: Level = 4) => {
     const [gameState, setGameState] = useState<GameState>({
         level: initialLevel,
         cards: [],
@@ -26,8 +26,10 @@ export const useGameLogic = (initialLevel: Level = 5) => {
 
     // Initialize level
     const startLevel = useCallback((level: Level) => {
-        let totalCards = level * level;
-        let pairsNeeded = Math.floor(totalCards / 2);
+        const totalCards = level * level;
+        const isOdd = totalCards % 2 !== 0; // Check for odd grid (e.g. 7x7=49)
+        const effectiveCards = isOdd ? totalCards - 1 : totalCards;
+        const pairsNeeded = effectiveCards / 2;
 
         // Select emojis
         const levelEmojis = EMOJIS.slice(0, pairsNeeded);
@@ -44,17 +46,16 @@ export const useGameLogic = (initialLevel: Level = 5) => {
         // Shuffle
         cards = shuffleArgs(cards);
 
-        // Handle 5x5 (25 cards) -> Insert Logo at center (index 12)
-        if (level === 5) {
-            // We have 24 cards currently. Insert the logo card at index 12.
-            const logoCard: Card = {
-                id: 'card-logo',
-                emoji: 'NEON', // Special marker
-                isFlipped: true, // Always visible
-                isMatched: true, // Considered matched so it doesn't affect logic
-                isLogo: true,
+        // If odd grid size (e.g. 7x7), insert a pre-matched "BONUS" card at the exact center
+        if (isOdd) {
+            const centerIndex = Math.floor(totalCards / 2);
+            const bonusCard: Card = {
+                id: 'card-center',
+                emoji: '🎁', // Bonus/Gift emoji
+                isFlipped: true,
+                isMatched: true, // Auto-matched
             };
-            cards.splice(12, 0, logoCard);
+            cards.splice(centerIndex, 0, bonusCard);
         }
 
         setGameState({

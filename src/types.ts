@@ -1,11 +1,11 @@
-export type Level = 1 | 2 | 5; // 1단계(5x5), 2단계(6x6), 5단계(10x10)
+export type Level = 3 | 4 | 6 | 7 | 8; // Easy(4x4), Medium(6x6), Hard(7x7), Very Hard(8x8)
 
 export interface Card {
     id: string; // Unique ID for React keys
     emoji: string;
     isFlipped: boolean;
     isMatched: boolean;
-    isLogo?: boolean; // For the center card in 5x5 grid
+
 }
 
 export interface GameState {
