@@ -1,0 +1,4 @@
+/* Clean up App.css so it overrides nothing unintentionally */
+.App {
+  /* text-align: center; */
+}

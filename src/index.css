@@ -1,0 +1,63 @@
+:root {
+  --neon-blue: #00f3ff;
+  --neon-pink: #ff00ff;
+  --neon-yellow: #ffee00;
+  --neon-green: #00ff00;
+  --bg-dark: #121212;
+  --card-bg: #1a1a1a;
+  --text-main: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* Neon Glow Utilities */
+.text-glow {
+  text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+
+.box-glow {
+  box-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+}
+
+/* Animations */
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow:
+      0 0 4px #fff,
+      0 0 11px #fff,
+      0 0 19px #fff,
+      0 0 40px var(--neon-blue),
+      0 0 80px var(--neon-blue),
+      0 0 90px var(--neon-blue),
+      0 0 100px var(--neon-blue),
+      0 0 150px var(--neon-blue);
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+.neon-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  animation: flicker 2.5s infinite alternate;
+  margin-bottom: 20px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
