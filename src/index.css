@@ -1,63 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
 :root {
+  /* Colors - Premium Neon Palette */
+  --bg-dark: #050510;
+  --bg-gradient: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050510 100%);
+
   --neon-blue: #00f3ff;
-  --neon-pink: #ff00ff;
-  --neon-yellow: #ffee00;
-  --neon-green: #00ff00;
-  --bg-dark: #121212;
-  --card-bg: #1a1a1a;
+  --neon-purple: #bc13fe;
+  --neon-pink: #ff0055;
+  --neon-green: #0aff68;
+
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.2);
+
   --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+
+  --card-back: #101015;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Outfit', sans-serif;
   background-color: var(--bg-dark);
+  background: var(--bg-gradient);
   color: var(--text-main);
+  min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Neon Glow Utilities */
-.text-glow {
-  text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
-.box-glow {
-  box-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+.glass-button {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.glass-button:hover {
+  background: var(--glass-highlight);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+}
+
+.glass-button.active {
+  background: rgba(0, 243, 255, 0.15);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+}
+
+/* Typography & Effects */
+.title-glow {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 10px rgba(188, 19, 254, 0.7),
+    0 0 20px rgba(188, 19, 254, 0.5),
+    0 0 40px rgba(188, 19, 254, 0.3);
+  margin: 0 0 30px 0;
+  letter-spacing: -1px;
+}
+
+.status-text {
+  font-size: 1.2rem;
+  color: var(--text-muted);
 }
 
 /* Animations */
-@keyframes flicker {
-  0%, 18%, 22%, 25%, 53%, 57%, 100% {
-    text-shadow:
-      0 0 4px #fff,
-      0 0 11px #fff,
-      0 0 19px #fff,
-      0 0 40px var(--neon-blue),
-      0 0 80px var(--neon-blue),
-      0 0 90px var(--neon-blue),
-      0 0 100px var(--neon-blue),
-      0 0 150px var(--neon-blue);
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  20%, 24%, 55% {
-    text-shadow: none;
+
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-.neon-title {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #fff;
-  animation: flicker 2.5s infinite alternate;
-  margin-bottom: 20px;
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pop {
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
