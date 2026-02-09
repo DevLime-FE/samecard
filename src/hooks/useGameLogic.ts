@@ -13,7 +13,7 @@ const shuffleArgs = <T>(array: T[]): T[] => {
     return newArray;
 };
 
-export const useGameLogic = (initialLevel: Level = 4) => {
+export const useGameLogic = (initialLevel: Level = 5) => {
     const [gameState, setGameState] = useState<GameState>({
         level: initialLevel,
         cards: [],
@@ -22,14 +22,29 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         isGameComplete: false,
         flippedCards: [],
         isProcessing: false,
+        elapsedTime: 0,
+        isPlaying: false,
     });
+
+    // Time Thresholds (Seconds)
+    const getBonusMultiplier = (level: Level, time: number): number => {
+        if (level === 1) { // 5x5
+            if (time <= 40) return 2.0;
+            if (time <= 60) return 1.5;
+        } else if (level === 2) { // 6x6
+            if (time <= 80) return 2.0;
+            if (time <= 120) return 1.5;
+        } else if (level === 5) { // 10x10
+            if (time <= 200) return 2.0;
+            if (time <= 300) return 1.5;
+        }
+        return 1.0;
+    };
 
     // Initialize level
     const startLevel = useCallback((level: Level) => {
-        const totalCards = level * level;
-        const isOdd = totalCards % 2 !== 0; // Check for odd grid (e.g. 7x7=49)
-        const effectiveCards = isOdd ? totalCards - 1 : totalCards;
-        const pairsNeeded = effectiveCards / 2;
+        let totalCards = level * level;
+        let pairsNeeded = Math.floor(totalCards / 2);
 
         // Select emojis
         const levelEmojis = EMOJIS.slice(0, pairsNeeded);
@@ -46,26 +61,65 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         // Shuffle
         cards = shuffleArgs(cards);
 
-        // If odd grid size (e.g. 7x7), insert a pre-matched "BONUS" card at the exact center
-        if (isOdd) {
-            const centerIndex = Math.floor(totalCards / 2);
-            const bonusCard: Card = {
-                id: 'card-center',
-                emoji: '🎁', // Bonus/Gift emoji
+        // Handle 5x5 (25 cards) -> Insert Logo at center (index 12)
+        if (level === 5) { // Internal logic uses 5 for 10x10? Wait, the plan was Level 1=5x5, Level 2=6x6, Level 5=10x10.
+            // My previous code mapped level 1->5, 2->6, 5->10 in GameBoard.
+            // But in Types, Level = 1 | 2 | 5.
+            // And GameBoard: case 1: return 5; case 2: return 6; case 5: return 10.
+            // So for "Level 1" (5x5), gridSize is 5.
+            // WE NEED TO FIX THIS logic to match GameBoard.
+        }
+
+        // RE-VERIFY LEVEL MAPPING from GameBoard.tsx
+        // getGridSize: 1 -> 5, 2 -> 6, 5 -> 10.
+        // So if level === 1, we generate 5*5 = 25 cards.
+        // if level === 5, we generate 10*10 = 100 cards.
+
+        // CORRECTING LOGIC:
+        let gridSize = 5;
+        if (level === 1) gridSize = 5;
+        if (level === 2) gridSize = 6;
+        if (level === 5) gridSize = 10;
+
+        totalCards = gridSize * gridSize;
+        pairsNeeded = Math.floor(totalCards / 2);
+
+        // Re-select emojis with correct count
+        const correctLevelEmojis = EMOJIS.slice(0, pairsNeeded);
+        const correctDeckEmojis = [...correctLevelEmojis, ...correctLevelEmojis];
+
+        cards = correctDeckEmojis.map((emoji, index) => ({
+            id: `card-${index}`,
+            emoji,
+            isFlipped: false,
+            isMatched: false,
+        }));
+        cards = shuffleArgs(cards);
+
+        // 5x5 special case (Level 1)
+        if (level === 1) {
+            const logoCard: Card = {
+                id: 'card-logo',
+                emoji: 'NEON',
                 isFlipped: true,
-                isMatched: true, // Auto-matched
+                isMatched: true,
+                isLogo: true,
             };
-            cards.splice(centerIndex, 0, bonusCard);
+            cards.splice(12, 0, logoCard);
         }
 
         setGameState({
             level,
             cards,
             score: 0,
-            combo: 0, // Reset combo only on full restart
+            combo: 0,
             isGameComplete: false,
             flippedCards: [],
             isProcessing: false,
+            elapsedTime: 0,
+            isPlaying: true, // Start timer
+            finalScore: undefined,
+            timeBonusMultiplier: undefined,
         });
     }, []);
 
@@ -74,6 +128,20 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         startLevel(gameState.level);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Timer
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (gameState.isPlaying && !gameState.isGameComplete) {
+            interval = setInterval(() => {
+                setGameState(prev => ({
+                    ...prev,
+                    elapsedTime: prev.elapsedTime + 1
+                }));
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [gameState.isPlaying, gameState.isGameComplete]);
+
     // Handle Card Click
     const handleCardClick = (id: string) => {
         if (gameState.isProcessing || gameState.isGameComplete) return;
@@ -81,10 +149,8 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         const clickedCardIndex = gameState.cards.findIndex(c => c.id === id);
         const clickedCard = gameState.cards[clickedCardIndex];
 
-        // Ignore if already flipped/matched or invalid
         if (clickedCard.isFlipped || clickedCard.isMatched) return;
 
-        // Flip the card
         const newCards = [...gameState.cards];
         newCards[clickedCardIndex].isFlipped = true;
 
@@ -96,7 +162,6 @@ export const useGameLogic = (initialLevel: Level = 4) => {
             flippedCards: newFlippedIndices,
         }));
 
-        // Check match if 2 cards flipped
         if (newFlippedIndices.length === 2) {
             setGameState(prev => ({ ...prev, isProcessing: true }));
             checkForMatch(newFlippedIndices, newCards);
@@ -109,20 +174,26 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         const secondCard = currentCards[secondIndex];
 
         if (firstCard.emoji === secondCard.emoji) {
-            // MATCH
             setTimeout(() => {
                 setGameState(prev => {
                     const matchedCards = [...prev.cards];
                     matchedCards[firstIndex].isMatched = true;
                     matchedCards[secondIndex].isMatched = true;
 
-                    // Score Logic: 10 * (2 ^ combo)
                     const points = 10 * Math.pow(2, prev.combo);
                     const newScore = prev.score + points;
                     const newCombo = prev.combo + 1;
 
-                    // Check Game Over
                     const allMatched = matchedCards.every(c => c.isMatched);
+                    let finalScore = undefined;
+                    let timeBonusMultiplier = undefined;
+                    let isPlaying = prev.isPlaying;
+
+                    if (allMatched) {
+                        isPlaying = false;
+                        timeBonusMultiplier = getBonusMultiplier(prev.level, prev.elapsedTime);
+                        finalScore = Math.floor(newScore * timeBonusMultiplier);
+                    }
 
                     return {
                         ...prev,
@@ -131,12 +202,15 @@ export const useGameLogic = (initialLevel: Level = 4) => {
                         combo: newCombo,
                         flippedCards: [],
                         isProcessing: false,
-                        isGameComplete: allMatched
+                        isGameComplete: allMatched,
+                        elapsedTime: prev.elapsedTime, // Keep passing it
+                        isPlaying,
+                        finalScore,
+                        timeBonusMultiplier
                     };
                 });
             }, 500);
         } else {
-            // NO MATCH
             setTimeout(() => {
                 setGameState(prev => {
                     const resetCards = [...prev.cards];
@@ -146,7 +220,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
                     return {
                         ...prev,
                         cards: resetCards,
-                        combo: 0, // Reset combo
+                        combo: 0,
                         flippedCards: [],
                         isProcessing: false
                     };
@@ -155,18 +229,10 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         }
     };
 
-    const resetGame = () => {
-        startLevel(gameState.level);
-    };
-
-    const changeLevel = (newLevel: Level) => {
-        startLevel(newLevel);
-    };
-
     return {
         gameState,
         handleCardClick,
-        resetGame,
-        changeLevel
+        resetGame: () => startLevel(gameState.level),
+        changeLevel: (lvl: Level) => startLevel(lvl)
     };
 };
