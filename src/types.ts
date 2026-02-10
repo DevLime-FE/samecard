@@ -20,4 +20,5 @@ export interface GameState {
     isPlaying: boolean; // Timer active
     finalScore?: number; // Calculated at end
     timeBonusMultiplier?: number;
+    isGameStarted: boolean;
 }

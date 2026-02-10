@@ -24,6 +24,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         isProcessing: false,
         elapsedTime: 0,
         isPlaying: false,
+        isGameStarted: false,
     });
 
     // Time Thresholds (Seconds) based on grid size
@@ -96,11 +97,19 @@ export const useGameLogic = (initialLevel: Level = 4) => {
             flippedCards: [],
             isProcessing: false,
             elapsedTime: 0,
-            isPlaying: true, // Start timer
-            finalScore: undefined,
             timeBonusMultiplier: undefined,
+            isPlaying: false, // Timer start paused
+            isGameStarted: false, // Init as false, wait for user start
         });
     }, []);
+
+    const startGame = () => {
+        setGameState(prev => ({
+            ...prev,
+            isGameStarted: true,
+            isPlaying: true
+        }));
+    };
 
     // Initial load
     useEffect(() => {
@@ -123,7 +132,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
 
     // Handle Card Click
     const handleCardClick = (id: string) => {
-        if (gameState.isProcessing || gameState.isGameComplete) return;
+        if (!gameState.isGameStarted || gameState.isProcessing || gameState.isGameComplete) return;
 
         const clickedCardIndex = gameState.cards.findIndex(c => c.id === id);
         if (clickedCardIndex === -1) return;
@@ -213,6 +222,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         gameState,
         handleCardClick,
         resetGame: () => startLevel(gameState.level),
-        changeLevel: (lvl: Level) => startLevel(lvl)
+        changeLevel: (lvl: Level) => startLevel(lvl),
+        startGame,
     };
 };

@@ -6,11 +6,11 @@ import ScoreBoard from './components/ScoreBoard';
 import LevelSelector from './components/LevelSelector';
 
 function App() {
-  const { gameState, handleCardClick, changeLevel, resetGame } = useGameLogic();
+  const { gameState, handleCardClick, changeLevel, resetGame, startGame } = useGameLogic();
 
   return (
     <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-      <h1 className="neon-title" onClick={resetGame} style={{ cursor: 'pointer' }}>
+      <h1 className="neon-title" onClick={() => { window.location.reload(); }} style={{ cursor: 'pointer' }}>
         NEON MEMORY
       </h1>
 
@@ -18,7 +18,51 @@ function App() {
 
       <LevelSelector currentLevel={gameState.level} onSelectLevel={changeLevel} />
 
-      {gameState.isGameComplete && (
+      <div style={{ position: 'relative', minHeight: '400px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        {!gameState.isGameStarted && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            zIndex: 10,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '10px',
+            backdropFilter: 'blur(2px)'
+          }}>
+            <button
+              onClick={startGame}
+              className="neon-button"
+              style={{
+                fontSize: '2rem',
+                padding: '20px 60px',
+                borderRadius: '50px',
+                border: 'none',
+                background: 'var(--neon-blue)',
+                color: '#000',
+                fontWeight: 'bold',
+                boxShadow: '0 0 20px var(--neon-blue)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              GAME START
+            </button>
+          </div>
+        )}
+
+        <GameBoard
+          level={gameState.level}
+          cards={gameState.cards}
+          onCardClick={handleCardClick}
+        />
+      </div>
+
+      {gameState.isGameStarted && gameState.isGameComplete && (
         <div style={{
           position: 'fixed',
           top: '50%',
@@ -62,12 +106,6 @@ function App() {
           </button>
         </div>
       )}
-
-      <GameBoard
-        level={gameState.level}
-        cards={gameState.cards}
-        onCardClick={handleCardClick}
-      />
     </div>
   );
 }
