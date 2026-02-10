@@ -68,14 +68,16 @@ const Card: React.FC<CardComponentProps> = ({ card, onClick }) => {
                         width: '100%',
                         height: '100%',
                         backfaceVisibility: 'hidden',
-                        backgroundColor: 'rgba(20, 20, 30, 0.9)',
-                        border: '1px solid var(--neon-pink)',
-                        boxShadow: '0 0 15px rgba(255, 0, 85, 0.3)',
+                        backgroundColor: card.isLogo ? 'rgba(0, 0, 0, 0.8)' : 'rgba(20, 20, 30, 0.9)',
+                        border: card.isLogo ? '2px solid var(--neon-blue)' : '1px solid var(--neon-pink)',
+                        boxShadow: card.isLogo ? '0 0 20px var(--neon-blue)' : '0 0 15px rgba(255, 0, 85, 0.3)',
                         transform: 'rotateY(180deg)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '2.5rem',
+                        fontSize: card.isLogo ? '1.2rem' : '2.5rem',
+                        fontWeight: card.isLogo ? 'bold' : 'normal',
+                        color: card.isLogo ? 'var(--neon-blue)' : 'inherit',
                         overflow: 'hidden'
                     }}
                 >

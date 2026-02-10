@@ -19,13 +19,13 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ currentLevel, onSelectLev
     return (
         <div className="glass-panel" style={{ display: 'flex', gap: '15px', padding: '15px', alignItems: 'center' }}>
             <span className="status-text" style={{ marginRight: '10px', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Difficulty</span>
-            {levels.map((lvl) => (
+            {levels.map((lvl: Number, idx) => (
                 <button
-                    key={lvl}
-                    onClick={() => onSelectLevel(lvl)}
+                    key={idx}
+                    onClick={() => onSelectLevel(lvl as Level)}
                     className={`glass-button ${currentLevel === lvl ? 'active' : ''}`}
                 >
-                    {levelLabels[lvl]}
+                    {levelLabels[lvl as Level]}
                 </button>
             ))}
         </div>

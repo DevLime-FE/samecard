@@ -13,7 +13,7 @@ const shuffleArgs = <T>(array: T[]): T[] => {
     return newArray;
 };
 
-export const useGameLogic = (initialLevel: Level = 5) => {
+export const useGameLogic = (initialLevel: Level = 4) => {
     const [gameState, setGameState] = useState<GameState>({
         level: initialLevel,
         cards: [],
@@ -26,31 +26,44 @@ export const useGameLogic = (initialLevel: Level = 5) => {
         isPlaying: false,
     });
 
-    // Time Thresholds (Seconds)
-    const getBonusMultiplier = (level: Level, time: number): number => {
-        if (level === 1) { // 5x5
-            if (time <= 40) return 2.0;
-            if (time <= 60) return 1.5;
-        } else if (level === 2) { // 6x6
-            if (time <= 80) return 2.0;
-            if (time <= 120) return 1.5;
-        } else if (level === 5) { // 10x10
-            if (time <= 200) return 2.0;
-            if (time <= 300) return 1.5;
+    // Time Thresholds (Seconds) based on grid size
+    const getBonusMultiplier = (level: number, time: number): number => {
+        // Approximate difficulty scaling
+        // 3x3 (9 cards): 15s/25s
+        // 4x4 (16 cards): 25s/40s
+        // 6x6 (36 cards): 60s/90s
+        // 7x7 (49 cards): 90s/130s
+        // 8x8 (64 cards): 120s/180s
+
+        let fastTime = 0;
+        let mediumTime = 0;
+
+        switch (level) {
+            case 3: fastTime = 15; mediumTime = 25; break;
+            case 4: fastTime = 25; mediumTime = 40; break;
+            case 6: fastTime = 60; mediumTime = 90; break;
+            case 7: fastTime = 90; mediumTime = 130; break;
+            case 8: fastTime = 120; mediumTime = 180; break;
+            default: fastTime = 60; mediumTime = 90;
         }
+
+        if (time <= fastTime) return 2.0;
+        if (time <= mediumTime) return 1.5;
         return 1.0;
     };
 
     // Initialize level
     const startLevel = useCallback((level: Level) => {
-        let totalCards = level * level;
-        let pairsNeeded = Math.floor(totalCards / 2);
+        const gridSize = level;
+        const totalCards = gridSize * gridSize;
+        const isOddTotal = totalCards % 2 !== 0;
+        const pairsNeeded = Math.floor(totalCards / 2);
 
         // Select emojis
         const levelEmojis = EMOJIS.slice(0, pairsNeeded);
         const deckEmojis = [...levelEmojis, ...levelEmojis];
 
-        // Create card objects
+        // Create initial card objects
         let cards: Card[] = deckEmojis.map((emoji, index) => ({
             id: `card-${index}`,
             emoji,
@@ -61,43 +74,9 @@ export const useGameLogic = (initialLevel: Level = 5) => {
         // Shuffle
         cards = shuffleArgs(cards);
 
-        // Handle 5x5 (25 cards) -> Insert Logo at center (index 12)
-        if (level === 5) { // Internal logic uses 5 for 10x10? Wait, the plan was Level 1=5x5, Level 2=6x6, Level 5=10x10.
-            // My previous code mapped level 1->5, 2->6, 5->10 in GameBoard.
-            // But in Types, Level = 1 | 2 | 5.
-            // And GameBoard: case 1: return 5; case 2: return 6; case 5: return 10.
-            // So for "Level 1" (5x5), gridSize is 5.
-            // WE NEED TO FIX THIS logic to match GameBoard.
-        }
-
-        // RE-VERIFY LEVEL MAPPING from GameBoard.tsx
-        // getGridSize: 1 -> 5, 2 -> 6, 5 -> 10.
-        // So if level === 1, we generate 5*5 = 25 cards.
-        // if level === 5, we generate 10*10 = 100 cards.
-
-        // CORRECTING LOGIC:
-        let gridSize = 5;
-        if (level === 1) gridSize = 5;
-        if (level === 2) gridSize = 6;
-        if (level === 5) gridSize = 10;
-
-        totalCards = gridSize * gridSize;
-        pairsNeeded = Math.floor(totalCards / 2);
-
-        // Re-select emojis with correct count
-        const correctLevelEmojis = EMOJIS.slice(0, pairsNeeded);
-        const correctDeckEmojis = [...correctLevelEmojis, ...correctLevelEmojis];
-
-        cards = correctDeckEmojis.map((emoji, index) => ({
-            id: `card-${index}`,
-            emoji,
-            isFlipped: false,
-            isMatched: false,
-        }));
-        cards = shuffleArgs(cards);
-
-        // 5x5 special case (Level 1)
-        if (level === 1) {
+        // Insert Center Card for odd grid sizes (e.g. 3x3, 5x5, 7x7)
+        if (isOddTotal) {
+            const centerIndex = Math.floor(totalCards / 2);
             const logoCard: Card = {
                 id: 'card-logo',
                 emoji: 'NEON',
@@ -105,7 +84,7 @@ export const useGameLogic = (initialLevel: Level = 5) => {
                 isMatched: true,
                 isLogo: true,
             };
-            cards.splice(12, 0, logoCard);
+            cards.splice(centerIndex, 0, logoCard);
         }
 
         setGameState({
@@ -147,9 +126,10 @@ export const useGameLogic = (initialLevel: Level = 5) => {
         if (gameState.isProcessing || gameState.isGameComplete) return;
 
         const clickedCardIndex = gameState.cards.findIndex(c => c.id === id);
+        if (clickedCardIndex === -1) return;
         const clickedCard = gameState.cards[clickedCardIndex];
 
-        if (clickedCard.isFlipped || clickedCard.isMatched) return;
+        if (clickedCard.isFlipped || clickedCard.isMatched || clickedCard.isLogo) return;
 
         const newCards = [...gameState.cards];
         newCards[clickedCardIndex].isFlipped = true;
@@ -184,7 +164,7 @@ export const useGameLogic = (initialLevel: Level = 5) => {
                     const newScore = prev.score + points;
                     const newCombo = prev.combo + 1;
 
-                    const allMatched = matchedCards.every(c => c.isMatched);
+                    const allMatched = matchedCards.every(c => c.isMatched || c.isLogo);
                     let finalScore = undefined;
                     let timeBonusMultiplier = undefined;
                     let isPlaying = prev.isPlaying;
@@ -203,7 +183,7 @@ export const useGameLogic = (initialLevel: Level = 5) => {
                         flippedCards: [],
                         isProcessing: false,
                         isGameComplete: allMatched,
-                        elapsedTime: prev.elapsedTime, // Keep passing it
+                        elapsedTime: prev.elapsedTime,
                         isPlaying,
                         finalScore,
                         timeBonusMultiplier
