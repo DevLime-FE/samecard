@@ -36,19 +36,7 @@ function App() {
           }}>
             <button
               onClick={startGame}
-              className="neon-button"
-              style={{
-                fontSize: '2rem',
-                padding: '20px 60px',
-                borderRadius: '50px',
-                border: 'none',
-                background: 'var(--neon-blue)',
-                color: '#000',
-                fontWeight: 'bold',
-                boxShadow: '0 0 20px var(--neon-blue)',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
+              className="neon-sign-start"
             >
               GAME START
             </button>
