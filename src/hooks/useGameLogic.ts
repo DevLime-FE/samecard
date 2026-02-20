@@ -25,6 +25,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
         elapsedTime: 0,
         isPlaying: false,
         isGameStarted: false,
+        isPreview: false,
     });
 
     // Time Thresholds (Seconds) based on grid size
@@ -100,15 +101,32 @@ export const useGameLogic = (initialLevel: Level = 4) => {
             timeBonusMultiplier: undefined,
             isPlaying: false, // Timer start paused
             isGameStarted: false, // Init as false, wait for user start
+            isPreview: false,
         });
     }, []);
 
     const startGame = () => {
+        // Show all cards for 3 seconds
         setGameState(prev => ({
             ...prev,
             isGameStarted: true,
-            isPlaying: true
+            isPreview: true,
+            isProcessing: true,
+            cards: prev.cards.map(card => ({ ...card, isFlipped: true }))
         }));
+
+        setTimeout(() => {
+            setGameState(prev => ({
+                ...prev,
+                isPreview: false,
+                isProcessing: false,
+                isPlaying: true, // Start timer after preview
+                cards: prev.cards.map(card => ({
+                    ...card,
+                    isFlipped: card.isMatched || card.isLogo ? true : false
+                }))
+            }));
+        }, 3000);
     };
 
     // Initial load

@@ -21,4 +21,5 @@ export interface GameState {
     finalScore?: number; // Calculated at end
     timeBonusMultiplier?: number;
     isGameStarted: boolean;
+    isPreview: boolean; // For initial card reveal
 }
