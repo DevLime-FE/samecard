@@ -73,31 +73,41 @@ body::before {
 }
 
 body::after {
-  content: "🐄       🐎         🐑          🐖";
+  content: "🐄  🐎";
   position: fixed;
-  top: 45%;
-  left: 0;
-  right: 0;
-  font-size: 2rem;
-  text-align: center;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.3;
-  filter: blur(1px);
-}
-
-/* 추가 풀밭 장식 */
-.app-container::before {
-  content: "🐥  🐰    🐿️  🍀  🌼";
-  position: fixed;
-  bottom: 5%;
-  left: 0;
-  right: 0;
-  text-align: center;
+  top: 30%;
+  left: 3%;
   font-size: 2.5rem;
   pointer-events: none;
   z-index: -1;
   opacity: 0.4;
+  transform: rotate(-5deg);
+}
+
+/* 추가 풀밭 장식 - 지그재그 배치 */
+.app-container::before {
+  content: "🐑  🐖  🦆";
+  position: fixed;
+  top: 55%;
+  right: 2%;
+  /* 우측 사이드로 더 붙임 */
+  font-size: 3rem;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.app-container::after {
+  content: "🐥  🐰  🐿️";
+  position: fixed;
+  bottom: 8%;
+  left: 3%;
+  /* 좌측 사이드로 더 붙임 */
+  font-size: 3rem;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
 }
 
 /* Farm-Style Panels */
@@ -149,6 +159,8 @@ body::after {
   text-shadow: 2px 2px 0px var(--cream);
   margin: 0 0 30px 0;
   letter-spacing: -1px;
+  position: relative;
+  /* 제목 장식을 위해 추가 */
 }
 
 .status-text {
