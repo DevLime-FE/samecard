@@ -17,15 +17,16 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ currentLevel, onSelectLev
     };
 
     return (
-        <div className="glass-panel" style={{ display: 'flex', gap: '15px', padding: '15px', alignItems: 'center' }}>
-            <span className="status-text" style={{ marginRight: '10px', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Difficulty</span>
-            {levels.map((lvl: Number, idx) => (
+        <div className="farm-panel" style={{ display: 'flex', gap: '15px', padding: '15px', alignItems: 'center', marginBottom: '20px' }}>
+            <span className="status-text" style={{ marginRight: '10px', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>난이도 선택</span>
+            {levels.map((lvl: number, idx) => (
                 <button
                     key={idx}
                     onClick={() => onSelectLevel(lvl as Level)}
-                    className={`glass-button ${currentLevel === lvl ? 'active' : ''}`}
+                    className={`farm-button ${currentLevel === lvl ? 'active' : ''}`}
+                    style={{ fontSize: '0.9rem' }}
                 >
-                    {levelLabels[lvl as Level]}
+                    {lvl}x{lvl}
                 </button>
             ))}
         </div>

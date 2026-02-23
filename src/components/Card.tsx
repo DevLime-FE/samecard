@@ -30,7 +30,7 @@ const Card: React.FC<CardComponentProps> = ({ card, onClick }) => {
             >
                 {/* Front of Card (Unflipped State) */}
                 <div
-                    className="glass-panel"
+                    className="farm-panel"
                     style={{
                         position: 'absolute',
                         width: '100%',
@@ -39,11 +39,11 @@ const Card: React.FC<CardComponentProps> = ({ card, onClick }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '2rem',
-                        color: 'rgba(255, 255, 255, 0.1)',
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
+                        fontSize: '2.5rem',
+                        color: 'var(--wood-brown)',
+                        backgroundColor: 'var(--wood-light)',
+                        border: '4px solid var(--wood-brown)',
+                        boxShadow: 'inset 0 4px 8px rgba(0,0,0,0.2)',
                         overflow: 'hidden'
                     }}
                 >
@@ -51,8 +51,8 @@ const Card: React.FC<CardComponentProps> = ({ card, onClick }) => {
                         position: 'absolute',
                         width: '150%',
                         height: '150%',
-                        background: 'radial-gradient(circle, var(--neon-blue) 0%, transparent 70%)',
-                        opacity: 0.1,
+                        background: 'radial-gradient(circle, var(--cream) 0%, transparent 70%)',
+                        opacity: 0.2,
                         transform: 'translate(-50%, -50%)',
                         top: '50%',
                         left: '50%'
@@ -62,31 +62,25 @@ const Card: React.FC<CardComponentProps> = ({ card, onClick }) => {
 
                 {/* Back of Card (Flipped State - Emoji) */}
                 <div
-                    className="glass-panel"
+                    className="farm-panel"
                     style={{
                         position: 'absolute',
                         width: '100%',
                         height: '100%',
                         backfaceVisibility: 'hidden',
-                        backgroundColor: card.isLogo ? 'rgba(0, 0, 0, 0.8)' : 'rgba(20, 20, 30, 0.9)',
-                        border: card.isLogo ? '2px solid var(--neon-blue)' : '1px solid var(--neon-pink)',
-                        boxShadow: card.isLogo ? '0 0 20px var(--neon-blue)' : '0 0 15px rgba(255, 0, 85, 0.3)',
+                        backgroundColor: card.isLogo ? 'var(--sun-yellow)' : 'var(--cream)',
+                        border: card.isLogo ? '4px solid var(--wood-brown)' : '4px solid var(--farm-grass-dark)',
                         transform: 'rotateY(180deg)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: card.isLogo ? '1.2rem' : '2.5rem',
-                        fontWeight: card.isLogo ? 'bold' : 'normal',
-                        color: card.isLogo ? 'var(--neon-blue)' : 'inherit',
+                        fontSize: card.isLogo ? '1.5rem' : '3.5rem',
+                        fontWeight: '900',
+                        color: 'var(--wood-brown)',
                         overflow: 'hidden'
                     }}
                 >
-                    <div style={{
-                        position: 'absolute',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        background: 'radial-gradient(circle at center, rgba(188, 19, 254, 0.2) 0%, transparent 70%)',
-                    }} />
-                    <span style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.5))' }}>
+                    <span style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.1))' }}>
                         {card.emoji}
                     </span>
                 </div>

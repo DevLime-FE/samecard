@@ -1,23 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
 :root {
-  /* Colors - Premium Neon Palette */
-  --bg-dark: #050510;
-  --bg-gradient: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050510 100%);
+  /* Colors - Animal Farm Palette */
+  --farm-sky: #e1f5fe;
+  --farm-grass: #81c784;
+  --farm-grass-dark: #4caf50;
+  --farm-dirt: #8d6e63;
+  --wood-brown: #5d4037;
+  --wood-light: #795548;
+  --cream: #fff9c4;
+  --sun-yellow: #fdd835;
 
-  --neon-blue: #00f3ff;
-  --neon-purple: #bc13fe;
-  --neon-pink: #ff0055;
-  --neon-green: #0aff68;
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --panel-border: #5d4037;
 
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-highlight: rgba(255, 255, 255, 0.2);
+  --text-main: #2e7d32;
+  --text-dark: #1b5e20;
+  --text-light: #ffffff;
 
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.6);
-
-  --card-back: #101015;
+  --card-back: #a1887f;
 }
 
 * {
@@ -26,81 +27,146 @@
 
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
-  background-color: var(--bg-dark);
-  background: var(--bg-gradient);
-  color: var(--text-main);
+  font-family: 'Outfit', 'Sniglet', sans-serif;
+  background-color: var(--farm-grass);
+  /* 고급 농장 배경: 하늘 + 풀밭 */
+  background:
+    linear-gradient(180deg, var(--farm-sky) 0%, var(--farm-sky) 50%, var(--farm-grass) 50%, var(--farm-grass-dark) 100%);
+  position: relative;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Glassmorphism Utilities */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+/* 농장/숲 배경 장식 레이어 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  /* 구름들 */
+  background-image:
+    radial-gradient(circle at 10% 15%, white 15px, transparent 20px),
+    radial-gradient(circle at 13% 18%, white 18px, transparent 25px),
+    radial-gradient(circle at 7% 18%, white 12px, transparent 18px),
+
+    radial-gradient(circle at 80% 12%, white 20px, transparent 28px),
+    radial-gradient(circle at 84% 15%, white 25px, transparent 35px),
+    radial-gradient(circle at 76% 15%, white 15px, transparent 22px),
+
+    /* 울창한 숲 (지평선을 따라 겹쳐진 녹색 원들) */
+    radial-gradient(circle at 5% 50%, #2e7d32 8%, transparent 9%),
+    radial-gradient(circle at 15% 52%, #1b5e20 10%, transparent 11%),
+    radial-gradient(circle at 25% 48%, #388e3c 12%, transparent 13%),
+    radial-gradient(circle at 35% 51%, #2e7d32 9%, transparent 10%),
+    radial-gradient(circle at 45% 49%, #1b5e20 11%, transparent 12%),
+    radial-gradient(circle at 55% 52%, #388e3c 10%, transparent 11%),
+    radial-gradient(circle at 65% 50%, #2e7d32 13%, transparent 14%),
+    radial-gradient(circle at 75% 51%, #1b5e20 9%, transparent 10%),
+    radial-gradient(circle at 85% 48%, #388e3c 11%, transparent 12%),
+    radial-gradient(circle at 95% 50%, #2e7d32 10%, transparent 11%);
+  background-size: 100% 100%;
 }
 
-.glass-button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-main);
+body::after {
+  content: "🐄       🐎         🐑          🐖";
+  position: fixed;
+  top: 45%;
+  left: 0;
+  right: 0;
+  font-size: 2rem;
+  text-align: center;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.3;
+  filter: blur(1px);
+}
+
+/* 추가 풀밭 장식 */
+.app-container::before {
+  content: "🐥  🐰    🐿️  🍀  🌼";
+  position: fixed;
+  bottom: 5%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 2.5rem;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.4;
+}
+
+/* Farm-Style Panels */
+.farm-panel {
+  background: var(--panel-bg);
+  border: 4px solid var(--wood-brown);
+  border-radius: 20px;
+  box-shadow: 0 8px 0px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.farm-button {
+  background: var(--wood-brown);
+  border: none;
+  border-bottom: 4px solid #3e2723;
+  color: var(--text-light);
   padding: 12px 24px;
-  border-radius: 50px;
+  border-radius: 12px;
   font-family: inherit;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.1s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.glass-button:hover {
-  background: var(--glass-highlight);
-  border-color: var(--neon-blue);
-  box-shadow: 0 0 15px var(--neon-blue);
-  text-shadow: 0 0 5px var(--neon-blue);
+.farm-button:hover {
+  background: var(--wood-light);
+  transform: translateY(2px);
+  border-bottom-width: 2px;
 }
 
-.glass-button.active {
-  background: rgba(0, 243, 255, 0.15);
-  border-color: var(--neon-blue);
-  box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+.farm-button:active {
+  transform: translateY(4px);
+  border-bottom-width: 0px;
+}
+
+.farm-button.active {
+  background: var(--farm-grass-dark);
+  border-color: #2e7d32;
 }
 
 /* Typography & Effects */
-.title-glow {
+.title-wood {
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
-  color: #fff;
-  text-shadow:
-    0 0 10px rgba(188, 19, 254, 0.7),
-    0 0 20px rgba(188, 19, 254, 0.5),
-    0 0 40px rgba(188, 19, 254, 0.3);
+  color: var(--wood-brown);
+  text-shadow: 2px 2px 0px var(--cream);
   margin: 0 0 30px 0;
   letter-spacing: -1px;
 }
 
 .status-text {
   font-size: 1.2rem;
-  color: var(--text-muted);
+  color: var(--text-dark);
+  font-weight: 600;
 }
 
 /* Animations */
-@keyframes float {
+@keyframes sway {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: rotate(-1deg);
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: rotate(1deg);
   }
 }
 
@@ -116,75 +182,38 @@ body {
   }
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+.animate-sway {
+  animation: sway 3s ease-in-out infinite;
 }
 
 .animate-pop {
   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* Neon Sign Button */
-.neon-sign-start {
-  font-family: 'Outfit', sans-serif;
-  font-size: 4rem;
-  font-weight: 800;
+/* Rustic Sign Button */
+.farm-sign-start {
+  font-family: inherit;
+  font-size: 3rem;
+  font-weight: 900;
   text-transform: uppercase;
-  color: #fff;
-  background: transparent;
-  border: 4px solid var(--neon-pink);
-  border-radius: 15px;
-  padding: 20px 60px;
+  color: var(--cream);
+  background: var(--wood-brown);
+  border: 8px solid var(--wood-light);
+  border-radius: 10px;
+  padding: 20px 50px;
   cursor: pointer;
-  box-shadow:
-    0 0 10px var(--neon-pink),
-    inset 0 0 10px var(--neon-pink);
-  text-shadow:
-    0 0 10px var(--neon-pink),
-    0 0 20px var(--neon-pink),
-    0 0 40px var(--neon-pink);
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2), 0 15px 30px rgba(0, 0, 0, 0.3);
   position: relative;
-  transition: all 0.3s ease-in-out;
-  animation: flicker 1.5s infinite alternate;
+  transition: all 0.2s;
 }
 
-.neon-sign-start:hover {
-  background: rgba(255, 0, 85, 0.1);
-  box-shadow:
-    0 0 20px var(--neon-pink),
-    0 0 40px var(--neon-pink),
-    inset 0 0 20px var(--neon-pink);
-  text-shadow:
-    0 0 20px var(--neon-pink),
-    0 0 40px var(--neon-pink),
-    0 0 80px var(--neon-pink);
+.farm-sign-start:hover {
+  transform: translateY(-5px) scale(1.05);
+  background: var(--wood-light);
+  box-shadow: 0 15px 0 rgba(0, 0, 0, 0.2), 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-@keyframes flicker {
-
-  0%,
-  19%,
-  21%,
-  23%,
-  25%,
-  54%,
-  56%,
-  100% {
-    opacity: 1;
-    text-shadow:
-      0 0 10px var(--neon-pink),
-      0 0 20px var(--neon-pink),
-      0 0 40px var(--neon-pink);
-    box-shadow:
-      0 0 10px var(--neon-pink),
-      inset 0 0 10px var(--neon-pink);
-  }
-
-  20%,
-  24%,
-  55% {
-    opacity: 0.5;
-    text-shadow: none;
-    box-shadow: none;
-  }
+.farm-sign-start:active {
+  transform: translateY(5px);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
 }

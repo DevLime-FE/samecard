@@ -14,33 +14,30 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ score, combo, time }) => {
     };
 
     return (
-        <div style={{
+        <div className="farm-panel" style={{
             display: 'flex',
             justifyContent: 'space-around',
             alignItems: 'center',
             width: '100%',
             maxWidth: '600px',
-            margin: '20px auto',
-            padding: '15px',
-            border: '2px solid var(--neon-blue)',
-            borderRadius: '10px',
-            boxShadow: '0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue)',
-            backgroundColor: 'rgba(0, 243, 255, 0.1)'
+            margin: '0 auto 20px auto',
+            backgroundColor: 'var(--cream)',
+            border: '4px solid var(--wood-brown)',
         }}>
             <div style={{ textAlign: 'center' }}>
-                <h3 style={{ margin: 0, color: 'var(--neon-blue)', fontSize: '1.2rem', textTransform: 'uppercase' }}>점수 (SCORE)</h3>
-                <p className="text-glow" style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 'bold' }}>{score}</p>
+                <h3 style={{ margin: 0, color: 'var(--wood-brown)', fontSize: '1.2rem', fontWeight: 900 }}>점수</h3>
+                <p style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 900, color: 'var(--text-main)' }}>{score}</p>
             </div>
 
             <div style={{ textAlign: 'center' }}>
-                <h3 style={{ margin: 0, color: 'var(--neon-yellow)', fontSize: '1.2rem', textTransform: 'uppercase' }}>시간 (TIME)</h3>
-                <p className="text-glow" style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 'bold', color: 'var(--neon-yellow)' }}>{formatTime(time)}</p>
+                <h3 style={{ margin: 0, color: 'var(--wood-brown)', fontSize: '1.2rem', fontWeight: 900 }}>시간</h3>
+                <p style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 900, color: 'var(--text-dark)' }}>{formatTime(time)}</p>
             </div>
 
             {combo > 1 && (
-                <div style={{ textAlign: 'center', animation: 'pulse 0.5s infinite alternate' }}>
-                    <h3 style={{ margin: 0, color: 'var(--neon-pink)', fontSize: '1.2rem', textTransform: 'uppercase' }}>COMBO!</h3>
-                    <p className="text-glow" style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 'bold', color: 'var(--neon-pink)' }}>x{combo}</p>
+                <div style={{ textAlign: 'center' }}>
+                    <h3 style={{ margin: 0, color: 'var(--wood-light)', fontSize: '1.2rem', fontWeight: 900 }}>콤보!</h3>
+                    <p style={{ margin: '5px 0 0', fontSize: '2rem', fontWeight: 900, color: 'var(--farm-grass-dark)' }}>x{combo}</p>
                 </div>
             )}
         </div>

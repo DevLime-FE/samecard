@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Card, GameState, Level } from '../types';
 
-const EMOJIS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', 'ZO', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦋', '🐝', '🐙', '🐠', '🐬', '🐳', '🌹', '🌻', '🌲', '🌴', '🌵', '🍄', '🌍', '🌙', '⭐', '☀️', '🔥', '💧', '⚡', '❄️', '🍎', '🍓', '🍔', '🍕', '🚗', '🚀', '⚽', '🏀', '🎮', '🎸'];
+const EMOJIS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🐣', '🦆', '🦢', '🦉', '🦚', '🦜', '🦩', '🐴', '🐗', '🐺', '🦊', '🐱', '🐈', '🦁', '🐯', '🐆', '🐴', '🐎', '🦄', '🦓', '🦌', '🐮', '🐂', '🐃', '🐄', '🐷', '🐖', '🐗', '🐏', '🐑', '🐐', '🐪', '🐫', '🦙', '🦒', '🐘', '🦏', '🦛', '🐭', '🐁', '🐀', '🐹', '🐰', '🐇', '🐿️', '🦔', '🐾', '🐉', '🐲', '🌵', '🎄', '🌲', '🌳', '🌴', '🌱', '🌿', '☘️', '🍀', '🍃', '🍂', '🍁', '🍄', '🐚', '🌻', '🌼', '🌷', '🌱', '🌿', '🌾', '🌵', '🎄', '🌲', '🌳', '🌴', '🌱', '🌿', '☘️', '🍀', '🍃', '🍂', '🍁', '🍄', '🐚'];
 
 // Helper to shuffle cards
 const shuffleArgs = <T>(array: T[]): T[] => {
@@ -30,13 +30,6 @@ export const useGameLogic = (initialLevel: Level = 4) => {
 
     // Time Thresholds (Seconds) based on grid size
     const getBonusMultiplier = (level: number, time: number): number => {
-        // Approximate difficulty scaling
-        // 3x3 (9 cards): 15s/25s
-        // 4x4 (16 cards): 25s/40s
-        // 6x6 (36 cards): 60s/90s
-        // 7x7 (49 cards): 90s/130s
-        // 8x8 (64 cards): 120s/180s
-
         let fastTime = 0;
         let mediumTime = 0;
 
@@ -81,7 +74,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
             const centerIndex = Math.floor(totalCards / 2);
             const logoCard: Card = {
                 id: 'card-logo',
-                emoji: 'NEON',
+                emoji: 'FARM',
                 isFlipped: true,
                 isMatched: true,
                 isLogo: true,
@@ -106,7 +99,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
     }, []);
 
     const startGame = () => {
-        // Show all cards for 3 seconds
+        // Show all cards for 2 seconds (faster for fun)
         setGameState(prev => ({
             ...prev,
             isGameStarted: true,
@@ -126,7 +119,7 @@ export const useGameLogic = (initialLevel: Level = 4) => {
                     isFlipped: card.isMatched || card.isLogo ? true : false
                 }))
             }));
-        }, 3000);
+        }, 2000);
     };
 
     // Initial load
